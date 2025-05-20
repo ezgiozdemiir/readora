@@ -1,27 +1,51 @@
-import React from "react";
-
-type BuyLink = {
-  name: string;
-  url: string;
-};
-
-type Book = {
-  title: string;
-  description: string;
-  author: string;
-  book_image: string;
-  buy_links: BuyLink[];
-};
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import type { Book, BookList } from "../../types/types";
+import { Group, Skeleton } from "@mantine/core";
 
 type Props = {
   book: Book;
 };
 
-const BookDetail: React.FC<Props> = ({ book }) => {
+const BookDetail: React.FC = () => {
+      const { productId } = useParams<{ productId: string }>();
+  const [book, setBook] = useState<Book | null>(null);
+
+  useEffect(() => {
+    fetch("http://localhost:3001/results")
+      .then((res) => res.json())
+      .then((data: BookList) => {
+        const allBooks = data.lists.flatMap((category) => category.books);
+        const found = allBooks.find((b) => b.primary_isbn13 === productId);
+        setBook(found ?? null);
+      });
+  }, [productId]);
+
+  if (!book) {
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto bg-white rounded-lg shadow-md p-6 grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* Book Cover */}
+        <div className="md:col-span-1 flex justify-center">
+          <Skeleton height={240} width={160} radius="md" />
+        </div>
+        <div className="md:col-span-2 space-y-4">
+          <Skeleton height={32} width="60%" radius="sm" />
+          <Skeleton height={24} width="40%" radius="sm" />
+          <Skeleton height={80} width="100%" radius="sm" />
+          <Group gap="sm">
+            <Skeleton height={36} width={100} radius="xl" />
+            <Skeleton height={36} width={100} radius="xl" />
+            <Skeleton height={36} width={100} radius="xl" />
+          </Group>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+  return (
+    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto bg-white rounded-lg shadow-md p-6 grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="md:col-span-1 flex justify-center">
           <img
             src={book.book_image}
@@ -29,8 +53,6 @@ const BookDetail: React.FC<Props> = ({ book }) => {
             className="w-full max-w-xs object-cover rounded-lg shadow"
           />
         </div>
-
-        {/* Book Info */}
         <div className="md:col-span-2 flex flex-col justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
@@ -41,8 +63,6 @@ const BookDetail: React.FC<Props> = ({ book }) => {
               {book.description}
             </p>
           </div>
-
-          {/* Buy Links */}
           <div>
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
               Available At:

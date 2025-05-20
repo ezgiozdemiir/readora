@@ -7,6 +7,8 @@ const NavBar: React.FC = () => {
     <Container>
       <Group >
         <Button component={Link} to="/" variant="light" color="blue">Home</Button>
+        <Button component={Link} to="/profile" variant="light" color="blue">Profile</Button>
+        <Button component={Link} to="/login" variant="light" color="blue">Login</Button>
       </Group>
     </Container>
   );

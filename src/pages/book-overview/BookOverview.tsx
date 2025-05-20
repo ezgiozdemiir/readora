@@ -20,7 +20,7 @@ const BookOverview: React.FC = () => {
   return (
     <div className="cards">
       {books.map((book) => (
-        <BookCard key={book.title} book={book}/>
+        <BookCard key={book.primary_isbn13} book={book}/>
       ))}
     </div>
 

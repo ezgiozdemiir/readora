@@ -21,5 +21,6 @@ export type Book = {
   buy_links: BuyLink[];
   description: string;
   publisher: string;
-  title: string
+  title: string; 
+  primary_isbn13: string;
 }

@@ -2,6 +2,7 @@ import { IconHeart } from '@tabler/icons-react';
 import { ActionIcon, Badge, Button, Card, Group, Image, Text } from '@mantine/core';
 import classes from './BookCard.module.css';
 import type { Book } from '../../types/types';
+import { Link } from 'react-router-dom';
 
 type Props = {
   book: Book
@@ -30,7 +31,7 @@ export const BookCard: React.FC<Props> = ({ book }) => {
 
       <Card.Section className={classes.section}>
         <Text mt="md" className={classes.label} c="dimmed">
-          You can buy:
+          Buy Links:
         </Text>
        <Group gap={7} mt={5} wrap="wrap">
           {book.buy_links.map((link) => (
@@ -50,7 +51,7 @@ export const BookCard: React.FC<Props> = ({ book }) => {
       </Card.Section>
 
       <Group mt="xs">
-        <Button radius="md" style={{ flex: 1 }}>
+        <Button component={Link} to={`/books/${book.primary_isbn13}`} radius="md" style={{ flex: 1 }}>
           Show details
         </Button>
         <ActionIcon variant="default" radius="md" size={36}>
