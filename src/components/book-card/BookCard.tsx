@@ -3,12 +3,15 @@ import { ActionIcon, Badge, Button, Card, Group, Image, Text } from '@mantine/co
 import classes from './BookCard.module.css';
 import type { Book } from '../../types/types';
 import { Link } from 'react-router-dom';
+import { useWishlistStore } from '../../store/wishlistStore';
 
 type Props = {
   book: Book
 }
 
 export const BookCard: React.FC<Props> = ({ book }) => {
+   const toggleWishlist = useWishlistStore((state) => state.toggleWishlist);
+  const isInWishlist = useWishlistStore((state) => state.isInWishlist(book.primary_isbn13));
   return (
     <Card withBorder radius="md" p="md" className={classes.card}>
       <Card.Section>
@@ -54,8 +57,11 @@ export const BookCard: React.FC<Props> = ({ book }) => {
         <Button component={Link} to={`/books/${book.primary_isbn13}`} radius="md" style={{ flex: 1 }}>
           Show details
         </Button>
-        <ActionIcon variant="default" radius="md" size={36}>
-          <IconHeart className={classes.like} stroke={1.5} />
+        <ActionIcon variant="default" radius="md" size={36}
+          onClick={() => toggleWishlist(book)}
+          color={isInWishlist ? 'blue' : undefined}>
+          <IconHeart className={classes.like} stroke={1.5}  
+            fill={isInWishlist ? '#228be6' : 'none'}/>
         </ActionIcon>
       </Group>
     </Card>
