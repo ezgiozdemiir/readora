@@ -1,5 +1,3 @@
 export const Login: React.FC = () => {
-return(
-    <div>Login Page Works!</div>
-)
+    return <div>Login Page Works!</div>
 }

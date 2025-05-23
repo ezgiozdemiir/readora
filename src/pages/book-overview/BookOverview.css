@@ -1,15 +1,14 @@
 .cards {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  justify-content: space-between;
-  padding: 2rem;
-  margin-top: 3rem
-
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: space-between;
+    padding: 2rem;
+    margin-top: 3rem;
 }
 
 .cards > * {
-  flex: 1 1 calc(25% - 1.5rem);
-  box-sizing: border-box;
-  max-width: calc(25% - 1.5rem);
+    flex: 1 1 calc(25% - 1.5rem);
+    box-sizing: border-box;
+    max-width: calc(25% - 1.5rem);
 }
