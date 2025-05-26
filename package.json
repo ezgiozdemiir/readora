@@ -15,7 +15,8 @@
         "lint": "eslint .",
         "preview": "vite preview",
         "build:css": "postcss src/index.css -o dist/output.css",
-        "tailwind-build": "ts-node --loader ts-node/esm tailwind.config.ts"
+        "tailwind-build": "ts-node --loader ts-node/esm tailwind.config.ts",
+        "format": "prettier --write ."
     },
     "dependencies": {
         "@mantine/core": "^8.0.1",

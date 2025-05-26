@@ -8,7 +8,7 @@ import {
     Image,
     Text,
 } from '@mantine/core'
-import classes from './BookCard.module.css'
+import classes from './BookCard.module.scss'
 import type { Book } from '../../types/types'
 import { Link } from 'react-router-dom'
 import { useWishlistStore } from '../../store/wishlistStore'

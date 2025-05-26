@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { BookCard } from '../../components/book-card/BookCard'
-import './BookOverview.css'
+import './BookOverview.scss'
 import type { Book, BookList } from '../../types/types'
 
 const BookOverview: React.FC = () => {

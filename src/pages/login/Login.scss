@@ -1,0 +1,27 @@
+.inputs {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    width: 100vw;
+    gap: 2rem;
+    padding: 3rem;
+    background-color: rgb(232, 242, 242);
+
+    .input {
+        display: flex;
+        flex-direction: column;
+        margin: 0 auto;
+        width: 25vw;
+        justify-items: center;
+    }
+
+    .error{
+        display: flex;
+        justify-content: center;
+    }
+
+    .submit {
+        display: flex;
+        justify-content: center;
+    }
+}
