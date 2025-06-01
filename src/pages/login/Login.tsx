@@ -28,6 +28,7 @@ export const Login: React.FC = () => {
             navigate('/')
         } else {
             setError('Invalid email or password')
+            navigate('/sign-up')
         }
     }
 
@@ -43,6 +44,7 @@ export const Login: React.FC = () => {
 
     return (
         <div className="inputs">
+            <h2>Login</h2>
             {fields.map((field) => (
                 <div className="input" key={field}>
                     <Input

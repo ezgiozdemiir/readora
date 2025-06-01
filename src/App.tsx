@@ -6,6 +6,8 @@ import BookOverview from './pages/book-overview/BookOverview'
 import '@mantine/core/styles.css'
 import { Profile } from './pages/profile/Profile'
 import { Login } from './pages/login/Login'
+import { SignUp } from './pages/sign-up/SignUp'
+import { NotFound } from './pages/not-found/NotFound'
 
 const BookDetail = React.lazy(() => import('./pages/book-detail/BookDetail'))
 
@@ -37,6 +39,8 @@ const App: React.FC = () => {
                     />
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/login" element={<Login />} />
+                    <Route path="/sign-up" element={<SignUp />} />
+                    <Route path="*" element={<NotFound />} />
                 </Routes>
             </Router>
         </MantineProvider>
