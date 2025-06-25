@@ -1,4 +1,8 @@
-.cards {
+.profile {
+    margin-top: 8rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     display: grid;
     gap: 1.5rem;
     padding: 0 3rem;
@@ -20,12 +24,12 @@
         grid-template-columns: 1fr 1fr 1fr 1fr;
     }
 
-    .loading {
-        margin-top: 8rem;
-        position: absolute;
-        top: 40%;
-        left: 45%;
-        color: rgb(0, 162, 255);
-        font-weight: bold;
+    h2 {
+        writing-mode: vertical-rl;
+        text-orientation: upright;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-shadow: 5px 5px #c1c5ee;
     }
 }

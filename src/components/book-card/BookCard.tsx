@@ -10,7 +10,7 @@ type Props = {
   book: Book;
 };
 
-export const BookCard: React.FC<Props> = ({ book }) => {
+export function BookCard({ book }: Props){
   const toggleWishlist = useWishlistStore(state => state.toggleWishlist);
   const isInWishlist = useWishlistStore(state => state.isInWishlist(book.primary_isbn13));
   const isAuthenticated = !!localStorage.getItem('user');
@@ -31,7 +31,7 @@ export const BookCard: React.FC<Props> = ({ book }) => {
         <Image src={book.book_image} alt={book.title} height={180} />
       </Card.Section>
 
-      <Card.Section className={classes.section} mt="md">
+      <Card.Section className={classes.section} mt="md" style={{ height: 175 }}>
         <Group justify="apart">
           <Text fz="lg" fw={500}>
             {book.title}
@@ -66,7 +66,7 @@ export const BookCard: React.FC<Props> = ({ book }) => {
         </Group>
       </Card.Section>
 
-      <Group mt="xs">
+      <Group mt="xs" className='button-group'>
         <Button
           component={Link}
           to={`/books/${book.primary_isbn13}`}

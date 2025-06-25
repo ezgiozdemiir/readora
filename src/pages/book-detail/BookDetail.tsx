@@ -3,10 +3,6 @@ import { useParams } from 'react-router-dom'
 import type { Book, BookList } from '../../types/types'
 import { Group, Skeleton } from '@mantine/core'
 
-type Props = {
-    book: Book
-}
-
 const BookDetail: React.FC = () => {
     const { productId } = useParams<{ productId: string }>()
     const [book, setBook] = useState<Book | null>(null)
