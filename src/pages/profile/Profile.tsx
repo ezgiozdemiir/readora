@@ -3,6 +3,7 @@ import { BookCard } from '../../components/book-card/BookCard';
 import { useWishlistStore } from '../../store/wishlistStore';
 import { useEffect, useState } from 'react';
 import type { Book } from '../../types/types';
+import "./Profile.scss"
 
 export const Profile: React.FC = () => {
   const setUser = useWishlistStore(state => state.setUser);
@@ -29,7 +30,7 @@ export const Profile: React.FC = () => {
   }
 
   return (
-    <div>
+    <div className='profile'>
       <h2>My Wishlist</h2>
       {wishlist.length === 0 ? (
         <p>Your wishlist is empty.</p>
