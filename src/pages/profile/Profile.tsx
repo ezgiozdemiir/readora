@@ -26,7 +26,7 @@ export const Profile: React.FC = () => {
   const isAuthenticated = !!localStorage.getItem('user');
 
   if (!isAuthenticated) {
-    return <Text>Please log in to view your wishlist.</Text>;
+    return <Text className='unauthenicated'>Please log in to view your wishlist.</Text>;
   }
 
   return (
