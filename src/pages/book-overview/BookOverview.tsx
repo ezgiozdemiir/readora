@@ -25,7 +25,7 @@ const BookOverview: React.FC = () => {
     return (
         <div className="cards">
             {loading ? (
-                <p>Loading books...</p>
+                <p className='loading'>Loading books...</p>
             ) : (
                 books.map((book) => (
                     <BookCard key={book.primary_isbn13} book={book} />

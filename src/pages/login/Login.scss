@@ -3,9 +3,17 @@
     flex-direction: column;
     margin: 0 auto;
     width: 100vw;
+    height: 100vh;
     gap: 2rem;
     padding: 3rem;
+    justify-content: center;
     background-color: rgb(232, 242, 242);
+
+    h2 {
+        display: flex;
+        justify-content: center;
+        margin-top: 2rem;
+    }
 
     .input {
         display: flex;

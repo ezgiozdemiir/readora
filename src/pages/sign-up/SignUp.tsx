@@ -1,8 +1,8 @@
 import Input from '../../components/input/Input';
 import { inputTexts } from '../../constants/texts';
-import { Button, Modal, Text, Alert } from '@mantine/core';
-import { IconAlertTriangle, IconInfoCircle } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
+import { Button, Alert } from '@mantine/core';
+import { IconAlertTriangle } from '@tabler/icons-react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export const SignUp: React.FC = () => {
@@ -55,7 +55,6 @@ export const SignUp: React.FC = () => {
       setError('Failed to create user');
     }
   };
-  const icon = <IconInfoCircle />;
   return (
     <div className="inputs">
       <h2>Create an Account</h2>
