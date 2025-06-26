@@ -1,0 +1,98 @@
+.book-detail-root {
+    min-height: 100vh;
+    background: #f9fafb;
+    display: flex;
+    padding: 10rem;
+    width: 100vw;
+
+    .main-container {
+        max-width: 900px;
+        margin: 0 auto;
+        background: #fff;
+        border: 2px solid #e0e7ef;
+        border-radius: 1.25rem;
+        box-shadow: 0 4px 24px 0 rgba(16, 30, 54, 0.08);
+        padding: 2.5rem 2rem;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+
+        @media (min-width: 768px) {
+            grid-template-columns: 1fr 2fr;
+        }
+
+        .image-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            img {
+                max-width: 220px;
+                width: 100%;
+                height: auto;
+                border-radius: 0.8rem;
+                box-shadow: 0 2px 12px 0 rgba(16, 30, 54, 0.11);
+                border: 1px solid #e5e7eb;
+            }
+        }
+
+        .info-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            h1,
+            h2,
+            p,
+            h3 {
+                text-align: center;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+                font-weight: 700;
+                color: #1a202c;
+                margin-bottom: 0.5rem;
+            }
+            h2 {
+                color: #6b7280;
+                font-size: 1.25rem;
+                margin-bottom: 1.2rem;
+            }
+            p {
+                color: #373737;
+                font-size: 1.08rem;
+                margin-bottom: 2rem;
+            }
+
+            .buy-links {
+                margin-top: 2rem;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 1rem;
+                justify-content: center;
+                padding-inline-start: 0px !important;
+
+                li {
+                    list-style: none;
+                    display: flex;
+                    gap: 2rem;
+                    a {
+                        background: #2563eb;
+                        color: #fff;
+                        padding: 0.75rem 1.3rem;
+                        border-radius: 0.7rem;
+                        font-weight: 600;
+                        text-decoration: none;
+                        transition: background 0.2s;
+                        box-shadow: 0 1px 4px 0 rgba(16, 30, 54, 0.1);
+                        &:hover {
+                            background: #1e40af;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
