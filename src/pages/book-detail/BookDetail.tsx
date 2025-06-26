@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import type { Book, BookList } from '../../types/types'
 import { Group, Skeleton } from '@mantine/core'
+import './BookDetail.scss'
 
 const BookDetail: React.FC = () => {
     const { productId } = useParams<{ productId: string }>()
@@ -44,16 +45,16 @@ const BookDetail: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-5xl mx-auto bg-white rounded-lg shadow-md p-6 grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="md:col-span-1 flex justify-center">
+        <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 book-detail-root">
+            <div className="max-w-5xl mx-auto bg-white rounded-lg shadow-md p-6 grid grid-cols-1 md:grid-cols-3 gap-8 main-container">
+                <div className="md:col-span-1 flex justify-center image-section">
                     <img
                         src={book.book_image}
                         alt={book.title}
                         className="w-full max-w-xs object-cover rounded-lg shadow"
                     />
                 </div>
-                <div className="md:col-span-2 flex flex-col justify-between">
+                <div className="md:col-span-2 flex flex-col justify-between info-section">
                     <div>
                         <h1 className="text-3xl font-bold text-gray-900 mb-2">
                             {book.title}
@@ -69,7 +70,7 @@ const BookDetail: React.FC = () => {
                         <h3 className="text-xl font-semibold text-gray-900 mb-2">
                             Available At:
                         </h3>
-                        <ul className="flex flex-wrap gap-4">
+                        <ul className="flex flex-wrap gap-4 buy-links">
                             {book.buy_links.map((link, index) => (
                                 <li key={index}>
                                     <a
