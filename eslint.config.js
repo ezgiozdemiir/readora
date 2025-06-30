@@ -3,6 +3,7 @@ import tseslint from 'typescript-eslint'
 import pluginReact from 'eslint-plugin-react'
 import globals from 'globals'
 import { defineConfig } from 'eslint/config'
+import process from 'node:process'
 
 export default defineConfig([
     js.configs.recommended,
@@ -34,5 +35,11 @@ export default defineConfig([
                 version: 'detect',
             },
         },
-    },
+        ignorePatterns: [
+            'cypress.config.ts',
+        'cypress/**/*.ts',
+        ],
+  files: ['crossbrowser.test.js'],
+  ignores: true,
+    }
 ])

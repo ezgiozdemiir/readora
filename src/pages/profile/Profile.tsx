@@ -2,6 +2,7 @@ import { Text } from '@mantine/core';
 import { BookCard } from '../../components/book-card/BookCard';
 import { useWishlistStore } from '../../store/wishlistStore';
 import { useEffect, useState } from 'react';
+import type { Book } from '../../types/types';
 
 export const Profile: React.FC = () => {
   const setUser = useWishlistStore(state => state.setUser);
@@ -33,7 +34,7 @@ export const Profile: React.FC = () => {
       {wishlist.length === 0 ? (
         <p>Your wishlist is empty.</p>
       ) : (
-        wishlist.map(book => <BookCard key={book.primary_isbn13} book={book} />)
+        wishlist.map((book: Book) => <BookCard key={book.primary_isbn13} book={book} />)
       )}
     </div>
   );
