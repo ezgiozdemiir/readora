@@ -4,6 +4,7 @@ import { useWishlistStore } from '../../store/wishlistStore';
 import { useEffect, useState } from 'react';
 import type { Book } from '../../types/types';
 import "./Profile.scss"
+import type { Book } from '../../types/types';
 
 export const Profile: React.FC = () => {
   const setUser = useWishlistStore(state => state.setUser);
