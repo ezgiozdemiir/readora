@@ -17,11 +17,11 @@ export const useWishlistStore = create<WishlistState>()(
             currentUserEmail: null,
             allWishlists: {},
             toggleWishlist: (book: Book) => {
-                 const email = get().currentUserEmail
+                const email = get().currentUserEmail
                 if (!email) return
 
                 const allWishlists = { ...get().allWishlists }
-                 const userWishlist = allWishlists[email] || []
+                const userWishlist = allWishlists[email] || []
                 const exists = userWishlist.find(
                     (item) => item.primary_isbn13 === book.primary_isbn13
                 )
@@ -37,14 +37,12 @@ export const useWishlistStore = create<WishlistState>()(
                 set({ allWishlists })
             },
             isInWishlist: (isbn: string) => {
-               const email = get().currentUserEmail
+                const email = get().currentUserEmail
                 if (!email) return false
                 const userWishlist = get().allWishlists[email] || []
-                return userWishlist.some(
-                    (item) => item.primary_isbn13 === isbn
-                )
+                return userWishlist.some((item) => item.primary_isbn13 === isbn)
             },
-             getWishlist: () => {
+            getWishlist: () => {
                 const email = get().currentUserEmail
                 return email ? get().allWishlists[email] || [] : []
             },
