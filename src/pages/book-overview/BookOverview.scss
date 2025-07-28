@@ -1,8 +1,21 @@
+.category-buttons {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 5rem;
+}
+button.active {
+    background: rgb(34, 139, 230);
+    color: white;
+    font-weight: bold;
+    outline: 2px solid rgb(148, 203, 251);
+}
+
 .cards {
     display: grid;
     gap: 1.5rem;
     padding: 0 3rem;
-    margin-top: 5rem;
+    margin-top: 1rem;
     margin-left: auto;
     margin-right: auto;
     width: 100%;
