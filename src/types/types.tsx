@@ -2,10 +2,32 @@ export type BookList = {
     lists: BookCategoryList[]
 }
 
+// I have used Union Types for filtering display names of all the categories of books in db.json
+export type DisplayName =
+    | 'Hardcover Fiction'
+    | 'Hardcover Nonfiction'
+    | 'Paperback Nonfiction'
+    | "Children's Picture Books"
+    | "Children's & Young Adult Series"
+    | "Children's Middle Grade Hardcover"
+    | 'Young Adult Hardcover'
+    | 'Paperback Trade Fiction'
+    | 'Advice, How-To and Miscellaneous'
+    | 'Combined Print & E-Book Fiction'
+    | 'Combined Print & E-Book Nonfiction'
+    | 'Middle Grade Paperback'
+    | 'Young Adult Paperback'
+    | 'Mass Market'
+    | 'Audio Fiction'
+    | 'Audio Nonfiction'
+    | 'Business'
+    | 'Graphic Books and Manga'
+
 export type BookCategoryList = {
     books: Book[]
     list_id: number
     normal_list_ends_at: number
+    display_name: DisplayName
 }
 
 export type BuyLink = {
