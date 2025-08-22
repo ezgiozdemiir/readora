@@ -10,7 +10,7 @@
         "trailingComma": "es5"
     },
     "scripts": {
-        "dev": "concurrently \"vite\" \"json-server --watch db.json --port 3001\"",
+        "dev": "concurrently \"vite\" \"cross-env PORT=4000 npm --prefix ../server start\"",
         "build": "tsc -b && vite build",
         "lint": "eslint .",
         "preview": "vite preview",
@@ -26,6 +26,7 @@
         "@mantine/notifications": "^8.0.2",
         "@tabler/icons-react": "^3.31.0",
         "@tailwindcss/vite": "^4.1.6",
+        "axios": "^1.11.0",
         "chromedriver": "^138.0.0",
         "edgedriver": "^6.1.1",
         "geckodriver": "^5.0.0",

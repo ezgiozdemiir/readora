@@ -5,6 +5,7 @@ import './Login.scss';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IconAlertTriangle } from '@tabler/icons-react';
+import axiosInstance from '../../axiosInstance';
 
 export const Login: React.FC = () => {
   const fields: (keyof typeof inputTexts)[] = ['email', 'password'];
@@ -15,23 +16,31 @@ export const Login: React.FC = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
-    const email = formValues.email.trim().toLowerCase();
-    const password = formValues.password.trim();
+const handleLogin = async () => {
+  const username = formValues.email.trim();
+  const password = formValues.password.trim();
 
-    const res = await fetch(`http://localhost:3001/users?email=${email}`);
-    const users = await res.json();
-    const user = users[0];
+  if (!username || !password) {
+    setError('Please enter both username and password.');
+    return;
+  }
 
-    if (user && user.password === password) {
-      localStorage.setItem('user', JSON.stringify(user));
-      setError('');
-      navigate('/');
-    } else {
-      setError('Invalid email or password');
-    }
-  };
+  try {
+    const res = await axiosInstance.post('/login', { username, password });
+    const { accessToken, refreshToken, user } = res.data;
 
+    localStorage.setItem('authToken', accessToken);
+    localStorage.setItem('refreshToken', refreshToken);
+
+    localStorage.setItem('user', JSON.stringify(user));
+
+    setError('');
+    navigate('/');
+  } catch (e: any) {
+    const msg = e?.response?.data?.error || 'Login failed';
+    setError(msg);
+  }
+};
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     fieldName: keyof typeof inputTexts,
