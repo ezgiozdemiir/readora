@@ -7,6 +7,8 @@ import {
     type BookCategoryList,
     type BookList,
 } from '../../types/types'
+import {axiosInstance} from '../../axiosInstance'
+import { useNavigate } from 'react-router-dom'
 
 const BookOverview: React.FC = () => {
     const allLabel = "All"
@@ -16,22 +18,39 @@ const BookOverview: React.FC = () => {
     const [allCategories, setAllCategories] = useState<BookCategoryList[]>([])
     const [filteredBooks, setFilteredBooks] = useState<Book[]>([])
     const [loading, setLoading] = useState(true)
+      const [error, setError] = useState<string | null>(null);
+      const navigate = useNavigate();
 
-    useEffect(() => {
-        fetch('http://localhost:3001/results')
-            .then((res) => res.json())
-            .then((data: BookList) => {
-                setAllCategories(data.lists)
-                const categoryNames = data.lists.map((cat) => cat.display_name)
-                setCategories([allLabel, ...categoryNames])
-                setSelectedCategory(allLabel)
-                setLoading(false)
-            })
-            .catch((err) => {
-                console.error('Fetch failed', err)
-                setLoading(false)
-            })
-    }, [])
+useEffect(() => {
+    let alive = true;
+    (async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await axiosInstance.get('/books');
+        if (!alive) return;
+
+        const data = res.data as { lists: BookCategoryList[] };
+        setAllCategories(data.lists);
+
+        const names = data.lists.map((c) => c.display_name as DisplayName);
+        setCategories([allLabel, ...names]);
+        setSelectedCategory(allLabel);
+      } catch (e: any) {
+        if (e?.response?.status === 401 || e?.response?.status === 403) {
+          navigate('/login');
+          return;
+        }
+        setError(e?.response?.data?.error || e?.message || 'Failed to load books');
+      } finally {
+        if (alive) setLoading(false);
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [navigate]);
+
 
     useEffect(() => {
         if (!selectedCategory) {
