@@ -7,7 +7,13 @@ app.use(express.json())
 
 //CORS EKLENDİ
 const cors = require('cors')
-app.use(cors({ origin: 'http://localhost:5173' }))
+app.use(
+    cors({
+        origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+    })
+)
 // Gizli anahtarlar (production'da bunlar .env dosyasında olmalı)
 const ACCESS_TOKEN_SECRET = 'your-access-token-secret-key-2024'
 const REFRESH_TOKEN_SECRET = 'your-refresh-token-secret-key-2024'

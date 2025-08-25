@@ -10,7 +10,7 @@
         "trailingComma": "es5"
     },
     "scripts": {
-        "dev": "concurrently \"vite\" \"cross-env PORT=4000 npm --prefix ../server start\"",
+        "dev": "concurrently -k -n FE,BE -c green,blue \"vite\" \"nodemon --watch server --ext js,json --exec node server/app.js\"",
         "build": "tsc -b && vite build",
         "lint": "eslint .",
         "preview": "vite preview",

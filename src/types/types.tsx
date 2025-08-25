@@ -46,3 +46,5 @@ export type Book = {
     title: string
     primary_isbn13: string
 }
+
+export type LoaderData = { lists: BookCategoryList[] }
