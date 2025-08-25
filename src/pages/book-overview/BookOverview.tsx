@@ -1,75 +1,47 @@
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { BookCard } from '../../components/book-card/BookCard'
 import './BookOverview.scss'
 import {
     DisplayName,
     type Book,
     type BookCategoryList,
-    type BookList,
+    type LoaderData
 } from '../../types/types'
-import {axiosInstance} from '../../axiosInstance'
-import { useNavigate } from 'react-router-dom'
+import { useLoaderData, useNavigation } from 'react-router-dom'
+// import { AxiosError } from 'axios'
 
 const BookOverview: React.FC = () => {
-    const allLabel = "All"
-    const [categories, setCategories] = useState<(DisplayName | "All")[]>([])
-    const [selectedCategory, setSelectedCategory] =
-        useState<DisplayName | "All">()
-    const [allCategories, setAllCategories] = useState<BookCategoryList[]>([])
-    const [filteredBooks, setFilteredBooks] = useState<Book[]>([])
-    const [loading, setLoading] = useState(true)
-      const [error, setError] = useState<string | null>(null);
-      const navigate = useNavigate();
+    const allLabel = 'All'
+    const { lists }: LoaderData = useLoaderData()
 
-useEffect(() => {
-    let alive = true;
-    (async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await axiosInstance.get('/books');
-        if (!alive) return;
+    const navigation = useNavigation()
+    const categories = useMemo<(DisplayName | typeof allLabel)[]>(
+        () => [allLabel, ...lists.map((c) => c.display_name as DisplayName)],
+        [lists]
+    )
 
-        const data = res.data as { lists: BookCategoryList[] };
-        setAllCategories(data.lists);
+    const [selectedCategory, setSelectedCategory] = useState<
+        DisplayName | typeof allLabel
+    >(allLabel)
 
-        const names = data.lists.map((c) => c.display_name as DisplayName);
-        setCategories([allLabel, ...names]);
-        setSelectedCategory(allLabel);
-      } catch (e: any) {
-        if (e?.response?.status === 401 || e?.response?.status === 403) {
-          navigate('/login');
-          return;
+    const effectiveSelected = useMemo<DisplayName | typeof allLabel>(() => {
+        return categories.includes(selectedCategory)
+            ? selectedCategory
+            : allLabel
+    }, [categories, selectedCategory])
+
+    const filteredBooks = useMemo<Book[]>(() => {
+        if (effectiveSelected === allLabel) {
+            return lists.flatMap((cat) => cat.books)
         }
-        setError(e?.response?.data?.error || e?.message || 'Failed to load books');
-      } finally {
-        if (alive) setLoading(false);
-      }
-    })();
-    return () => {
-      alive = false;
-    };
-  }, [navigate]);
+        const cat = lists.find((c) => c.display_name === effectiveSelected)
+        return cat ? cat.books : []
+    }, [lists, effectiveSelected])
 
-
-    useEffect(() => {
-        if (!selectedCategory) {
-            setFilteredBooks([])
-            return
-        }
-        setLoading(true)
-       if (selectedCategory === allLabel) {
-            const allBooks = allCategories.flatMap(cat => cat.books)
-            setFilteredBooks(allBooks)
-        } else {
-            const category = allCategories.find((cat) => cat.display_name === selectedCategory)
-            setFilteredBooks(category ? category.books : [])
-        }
-        setLoading(false)
-    }, [selectedCategory, allCategories])
+    const isRouting = navigation.state === 'loading'
 
     return (
-        <div className='book-overview'>
+        <div className="book-overview">
             <div className="category-buttons">
                 <h3>Filter Book Types: </h3>
                 {categories.map((cat) => (
@@ -84,7 +56,7 @@ useEffect(() => {
                 ))}
             </div>
             <div className="cards">
-                {loading ? (
+                {isRouting ? (
                     <p className="loading">Loading books...</p>
                 ) : (
                     filteredBooks.map((book) => (
