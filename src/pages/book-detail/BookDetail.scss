@@ -96,3 +96,20 @@
         }
     }
 }
+.outer {
+    display: flex;
+    text-align: -webkit-center;
+    padding-top: 10rem !important;
+    .container {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+
+        .info-element {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            align-items: center;
+        }
+    }
+}
