@@ -5,10 +5,10 @@ export const inputTexts = {
         description: 'Please enter your account password',
         error: 'Password is mandatory!',
     },
-    email: {
+    username: {
         label: 'E-mail',
-        placeholder: 'example@email.com',
-        description: 'We will not share your email.',
-        error: 'Valid email is required!',
+        placeholder: 'username',
+        description: 'Everyone can see your username',
+        error: 'Valid username is required!',
     },
 }

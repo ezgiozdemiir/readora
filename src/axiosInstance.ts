@@ -12,10 +12,10 @@ export const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-        const authToken = localStorage.getItem('authToken')
-        if (authToken) {
+        const accessToken = localStorage.getItem('accessToken')
+        if (accessToken) {
             config.headers = config.headers ?? {}
-            config.headers.Authorization = `Bearer ${authToken}`
+            config.headers.Authorization = `Bearer ${accessToken}`
         }
         return config
     },
@@ -40,35 +40,34 @@ axiosInstance.interceptors.response.use(
                 if (!refreshToken) throw new Error('No refresh token')
 
                 const refreshResponse = await axios.post(
-                    `http://${window.location.hostname}:4000/auth/refresh`,
+                    `http://${window.location.hostname}:4000/token/refresh`,
                     { refreshToken },
                     { headers: { 'Content-Type': 'application/json' } }
                 )
 
                 const {
-                    authToken: newAuthToken,
+                    accessToken: newaccessToken,
                     refreshToken: newRefreshToken,
                 } = (refreshResponse.data ?? {}) as {
-                    authToken: string
+                    accessToken: string
                     refreshToken?: string
                 }
 
-                if (!newAuthToken)
-                    throw new Error('No authToken in refresh response')
+                if (!newaccessToken)
+                    throw new Error('No accessToken in refresh response')
 
-                localStorage.setItem('authToken', newAuthToken)
+                localStorage.setItem('accessToken', newaccessToken)
                 if (newRefreshToken)
                     localStorage.setItem('refreshToken', newRefreshToken)
 
                 originalRequest.headers = originalRequest.headers ?? {}
-                originalRequest.headers.Authorization = `Bearer ${newAuthToken}`
+                originalRequest.headers.Authorization = `Bearer ${newaccessToken}`
 
                 return axiosInstance(originalRequest)
             } catch (refreshError) {
                 console.error('Token refresh failed:', refreshError)
-                localStorage.removeItem('authToken')
+                localStorage.removeItem('accessToken')
                 localStorage.removeItem('refreshToken')
-                window.location.href = '/login'
                 return Promise.reject(refreshError)
             }
         }

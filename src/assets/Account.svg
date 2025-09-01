@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="500" viewBox="0 0 1200 500">
+  <defs>
+    <marker id="arrowhead" viewBox="0 0 14 14" refX="7" refY="7" markerWidth="12" markerHeight="12" orient="auto">
+      <path d="M2,2 L12,7 L2,12 Z" fill="#ffffff"/>
+    </marker>
+  </defs>
+
+  <text
+    x="50%"
+    y="40%"
+    text-anchor="middle"
+    dominant-baseline="middle"
+    fill="#ffffff"
+    font-size="48"
+    font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif"
+  >
+    Don’t you have an account?
+  </text>
+
+  <path
+    d="M400 260 C 800 210, 600 320, 600 380"
+    fill="none"
+    stroke="#ffffff"
+    stroke-width="6"
+    stroke-linecap="round"
+    marker-end="url(#arrowhead)"
+  />
+</svg>

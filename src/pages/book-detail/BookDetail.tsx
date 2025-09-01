@@ -5,6 +5,7 @@ import { Group, Skeleton } from '@mantine/core'
 import './BookDetail.scss'
 
 const BookDetail: React.FC = () => {
+    //routeda kullanılan değişken ismini param olarak girmek zorunlu
     const { productId } = useParams<{ productId: string }>()
     const [book, setBook] = useState<Book | null>(null)
 

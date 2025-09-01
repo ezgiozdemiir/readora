@@ -1,119 +1,53 @@
-import React, { Suspense } from 'react';
+import React from 'react'
 import {
-  createBrowserRouter,
-  Outlet,
-  redirect,
-  RouterProvider,
-} from 'react-router-dom';
+    createBrowserRouter,
+    RouterProvider,
+} from 'react-router-dom'
+import BookOverview from './pages/book-overview/BookOverview'
+import { Profile } from './pages/profile/Profile'
+import { Login } from './pages/login/Login'
+import { SignUp } from './pages/sign-up/SignUp'
+import { NotFound } from './pages/not-found/NotFound'
+import RootLayout from './RootLayout'
+import Home from './pages/home/Home'
+import ProtectedRoute from './ProtectedRoute'
+const BookDetail = React.lazy(() => import('./pages/book-detail/BookDetail'))
 
-import NavBar from './components/navigation/NavBar';
-import BookOverview from './pages/book-overview/BookOverview';
-import { Profile } from './pages/profile/Profile';
-import { Login } from './pages/login/Login';
-import { SignUp } from './pages/sign-up/SignUp';
-import { NotFound } from './pages/not-found/NotFound';
-import { bookOverviewLoader } from './service/bookOverviewService';
-import BookOverviewError from './pages/book-overview/BookOverviewError';
-
-const BookDetail = React.lazy(() => import('./pages/book-detail/BookDetail'));
-
-function isAuthenticated() {
-  const at = localStorage.getItem('authToken');
-  const rt = localStorage.getItem('refreshToken');
-  return !!(at && rt);
-}
-
-async function requireAuth() {
-  if (!isAuthenticated()) {
-    throw redirect('/login');
-  }
-  return null;
-}
-
-function RootLayout({ children }: { children?: React.ReactNode }) {
-  return (
-    <>
-      <NavBar />
-        {children ?? <Outlet />}
-    </>
-  );
-}
-
-function RouteFallback() {
-  return <div style={{ padding: '2rem', fontSize: '1.2rem' }}>Loading…</div>;
-}
+//ROUTER REFACTORING W/MAXIMILLIAN'S REACT VIDEO
+//RouteLayout wrapper of the child elements, parent
+//Absolute paths --> all routes starts with "/", Relative paths --> begins witout /, only begins '' or 'products' (texts)
+//Home is the home page and path:'/' is same as index:true
 
 const router = createBrowserRouter([
     {
-    path: '/login',
-    element: (
-      <RootLayout>
-        <Login />
-      </RootLayout>
-    ),
-  },
-  {
-    path: '/sign-up',
-    element: (
-      <RootLayout>
-        <SignUp />
-      </RootLayout>
-    ),
-  },
-  {
-    path: '/',
-    element: (
-      <RootLayout>
-        <BookOverview />
-      </RootLayout>
-    ),
-    loader: bookOverviewLoader,
-    errorElement: (
-      <RootLayout>
-        <BookOverviewError />
-      </RootLayout>
-    ),
-  },
-  {
-    element: <RootLayout />, 
-    loader: requireAuth,          
-    children: [
-  {
-    path: '/books/:productId',
-    element: (
-      <RootLayout>
-        <Suspense fallback={<RouteFallback />}>
-          <BookDetail />
-        </Suspense>
-      </RootLayout>
-    ),
-  },
-  {
-    path: '/profile',
-    element: (
-      <RootLayout>
-        <Profile />
-      </RootLayout>
-    ),
-  },
-
-  {
-    path: '*',
-    element: (
-      <RootLayout>
-        <NotFound />
-      </RootLayout>
-    ),
-  },
-]},
-{
-    path: '*',
-    loader: () => redirect('/login'),
-  },
-]);
+        path: '/',
+        errorElement: <NotFound />,
+        children: [{ index: true, element: <Home /> }],
+    },
+    {
+        element: <RootLayout />,
+        children: [
+            { path: 'login', element: <Login /> },
+            {
+                path: '',
+                element: <ProtectedRoute />,
+                children: [
+                    { path: 'profile', element: <Profile /> },
+                    { path: 'books', element: <BookOverview /> },
+                    { path: 'books/:productId', element: <BookDetail /> },
+                    { path: 'sign-up', element: <SignUp /> },
+                    {
+                        path: '*',
+                        element: <NotFound />,
+                    },
+                ],
+            },
+        ],
+    },
+])
 
 const AppRouter: React.FC = () => {
-  return <RouterProvider router={router} />;
-};
+    return <RouterProvider router={router} />
+}
 
-export default AppRouter;
+export default AppRouter

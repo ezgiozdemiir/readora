@@ -20,7 +20,7 @@ const NavBar: React.FC = () => {
 
     const handleLogout = () => {
         localStorage.removeItem('user')
-        localStorage.removeItem('authToken')
+        localStorage.removeItem('accessToken')
         localStorage.removeItem('refreshToken')
         setUser(null)
         navigate('/')
@@ -29,9 +29,14 @@ const NavBar: React.FC = () => {
     return (
         <Container className="navbar">
             <Group>
-                <img src={logo} alt="readora" />
-                <Button component={Link} to="/" variant="light" color="blue">
-                    Home
+                <Link to="/"><img src={logo} alt="readora" /></Link>
+                 <Button
+                    component={Link}
+                    to="/books"
+                    variant="light"
+                    color="blue"
+                >
+                    Books
                 </Button>
                 <Button
                     component={Link}
