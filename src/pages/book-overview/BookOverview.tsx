@@ -1,23 +1,36 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { BookCard } from '../../components/book-card/BookCard'
 import './BookOverview.scss'
 import {
+    BookCategoryList,
     DisplayName,
     type Book,
-    type BookCategoryList,
-    type LoaderData
 } from '../../types/types'
-import { useLoaderData, useNavigation } from 'react-router-dom'
-// import { AxiosError } from 'axios'
+import { useNavigation } from 'react-router-dom'
+import { bookOverviewLoader } from '../../service/bookOverviewService'
 
 const BookOverview: React.FC = () => {
+    const [books, setBooks] = useState<BookCategoryList[]>([])
+
+    useEffect(() => {
+         (async () => {
+            try {
+                const data = await bookOverviewLoader()
+                setBooks(data.lists)
+            } catch (error) {
+                console.error("An error occured!")
+            }
+        })();
+      
+    }, [])
+
     const allLabel = 'All'
-    const { lists }: LoaderData = useLoaderData()
 
     const navigation = useNavigation()
+
     const categories = useMemo<(DisplayName | typeof allLabel)[]>(
-        () => [allLabel, ...lists.map((c) => c.display_name as DisplayName)],
-        [lists]
+        () => [allLabel, ...books.map((c) => c.display_name as DisplayName)],
+        [books]
     )
 
     const [selectedCategory, setSelectedCategory] = useState<
@@ -32,11 +45,11 @@ const BookOverview: React.FC = () => {
 
     const filteredBooks = useMemo<Book[]>(() => {
         if (effectiveSelected === allLabel) {
-            return lists.flatMap((cat) => cat.books)
+            return books.flatMap((cat) => cat.books)
         }
-        const cat = lists.find((c) => c.display_name === effectiveSelected)
+        const cat = books.find((c) => c.display_name === effectiveSelected)
         return cat ? cat.books : []
-    }, [lists, effectiveSelected])
+    }, [books, effectiveSelected])
 
     const isRouting = navigation.state === 'loading'
 

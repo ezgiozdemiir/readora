@@ -9,16 +9,16 @@ import axiosInstance from '../../axiosInstance'
 import { AxiosError } from 'axios'
 
 export const Login: React.FC = () => {
-    const fields: (keyof typeof inputTexts)[] = ['email', 'password']
+    const fields: (keyof typeof inputTexts)[] = ['username', 'password']
     const [formValues, setFormValues] = useState({
-        email: '',
+        username: '',
         password: '',
     })
     const [error, setError] = useState('')
     const navigate = useNavigate()
 
     const handleLogin = async () => {
-        const username = formValues.email.trim()
+        const username = formValues.username.trim()
         const password = formValues.password.trim()
 
         if (!username || !password) {
@@ -33,13 +33,13 @@ export const Login: React.FC = () => {
             })
             const { accessToken, refreshToken, user } = res.data
 
-            localStorage.setItem('authToken', accessToken)
+            localStorage.setItem('accessToken', accessToken)
             localStorage.setItem('refreshToken', refreshToken)
 
             localStorage.setItem('user', JSON.stringify(user))
 
             setError('')
-            navigate('/')
+            navigate('/books')
         } catch (e) {
             if (e instanceof AxiosError) {
                 const msg = e?.response?.data?.error || 'Login failed'
