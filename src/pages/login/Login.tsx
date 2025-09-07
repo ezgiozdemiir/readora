@@ -6,67 +6,74 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { IconAlertTriangle } from '@tabler/icons-react'
 import axiosInstance from '../../axiosInstance'
-import { AxiosError } from 'axios'
+import axios, { AxiosError } from 'axios'
+import { useForm, SubmitHandler, Controller } from 'react-hook-form'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
+
+//REACT-HOOK-FORM (https://react-hook-form.com/get-started)
+//Controller UI Library componentleri ile kolay çalışmayı sağlıyor.
+type LoginFormInputs = {
+    username: string
+    password: string
+}
 
 export const Login: React.FC = () => {
-    const fields: (keyof typeof inputTexts)[] = ['username', 'password']
-    const [formValues, setFormValues] = useState({
-        username: '',
-        password: '',
+    const loginSchema = yup.object({
+        username: yup.string().required('Username is required.'),
+        password: yup
+            .string()
+            .min(6, 'Must be at least 6 character.')
+            .max(10)
+            .required('Password is required.'),
     })
+
     const [error, setError] = useState('')
     const navigate = useNavigate()
 
-    const handleLogin = async () => {
-        const username = formValues.username.trim()
-        const password = formValues.password.trim()
+    const {
+        register,
+        control,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<LoginFormInputs>({ resolver: yupResolver(loginSchema) })
 
-        if (!username || !password) {
-            setError('Please enter both username and password.')
-            return
-        }
-
+    const onSubmit: SubmitHandler<LoginFormInputs> = async ({
+        username,
+        password,
+    }) => {
+        setError('')
         try {
             const res = await axiosInstance.post('/login', {
-                username,
-                password,
+                username: username.trim(),
+                password: password.trim(),
             })
             const { accessToken, refreshToken, user } = res.data
 
             localStorage.setItem('accessToken', accessToken)
             localStorage.setItem('refreshToken', refreshToken)
-
             localStorage.setItem('user', JSON.stringify(user))
 
-            setError('')
             navigate('/books')
         } catch (e) {
-            if (e instanceof AxiosError) {
-                const msg = e?.response?.data?.error || 'Login failed'
+            if (axios.isAxiosError(e)) {
+                const msg = (e.response?.data as any)?.error || 'Login failed'
                 setError(msg)
+            } else {
+                setError('Unknown error occurred!')
             }
-            setError('Unknown error occured!')
         }
-    }
-    const handleChange = (
-        event: React.ChangeEvent<HTMLInputElement>,
-        fieldName: keyof typeof inputTexts
-    ) => {
-        setFormValues((prev) => ({
-            ...prev,
-            [fieldName]: event.target.value,
-        }))
     }
 
     return (
         <div className="inputs">
             <h2>Login</h2>
-            {error === 'Invalid email or password' && (
+            {error === 'Username or password' && (
                 <Alert
                     variant="light"
                     color="red"
                     radius="md"
-                    title="Email or password is incorrect!"
+                    title="Username or password is incorrect!"
                     icon={<IconAlertTriangle />}
                     withCloseButton
                     onClose={() => setError('')}
@@ -79,28 +86,57 @@ export const Login: React.FC = () => {
                     .
                 </Alert>
             )}
-            {fields.map((field) => (
-                <div className="input" key={field}>
-                    <Input
-                        placeholder={inputTexts[field].placeholder}
-                        description={inputTexts[field].description}
-                        label={inputTexts[field].label}
-                        value={formValues[field]}
-                        onChange={(e) => handleChange(e, field)}
+
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="input">
+                    <Controller
+                        name="username"
+                        control={control}
+                        render={({ field }) => (
+                            <Input
+                                {...field}
+                                type="text"
+                                placeholder={inputTexts.username.placeholder}
+                                value={field.value ?? ''}
+                                description={inputTexts.username.description}
+                                label={inputTexts.username.label}
+                                {...register("username")}
+                            />
+                        )}
                     />
+                    {errors.username && <p>{errors.username.message}</p>}
                 </div>
-            ))}
-            <div className="error">{error && <div>{error}</div>}</div>
-            <div className="submit">
-                <Button
-                    variant="filled"
-                    size="md"
-                    radius="md"
-                    onClick={handleLogin}
-                >
-                    Login
-                </Button>
-            </div>
+
+                <div className="input">
+                    <Controller
+                        name="password"
+                        control={control}
+                        render={({ field }) => (
+                            <Input
+                                {...field}
+                                type="password"
+                                placeholder={inputTexts.password.placeholder}
+                                value={field.value ?? ''}
+                                description={inputTexts.password.description}
+                                label={inputTexts.password.label}
+                                {...register("password")}
+                            />
+                        )}
+                    />
+                    {errors.password && <p>{errors.password.message}</p>}
+                </div>
+
+                <div className="submit">
+                    <Button
+                        type="submit"
+                        variant="filled"
+                        size="md"
+                        radius="md"
+                    >
+                        Login
+                    </Button>
+                </div>
+            </form>
         </div>
     )
 }
