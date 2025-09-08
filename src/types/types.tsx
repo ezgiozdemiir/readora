@@ -49,4 +49,4 @@ export type Book = {
 
 export type LoaderData = { lists: BookCategoryList[] }
 
-export type User = {id: number, username: string, email: string}
+export type User = { id: number; username: string; email: string }

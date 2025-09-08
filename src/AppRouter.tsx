@@ -1,8 +1,5 @@
 import React from 'react'
-import {
-    createBrowserRouter,
-    RouterProvider,
-} from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import BookOverview from './pages/book-overview/BookOverview'
 import { Profile } from './pages/profile/Profile'
 import { Login } from './pages/login/Login'

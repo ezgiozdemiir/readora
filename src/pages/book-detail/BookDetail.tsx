@@ -1,27 +1,29 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import type { Book, BookList } from '../../types/types'
+import { useLocation, useParams } from 'react-router-dom'
+import type { Book } from '../../types/types'
 import { Group, Skeleton } from '@mantine/core'
 import './BookDetail.scss'
+import { useAppStore } from '../../store/appStore'
 
 const BookDetail: React.FC = () => {
     //routeda kullanılan değişken ismini param olarak girmek zorunlu
     const { productId } = useParams<{ productId: string }>()
-    const [book, setBook] = useState<Book | null>(null)
+    const location = useLocation()
+    const stateBook = (location.state as { book?: Book } | null)?.book
+    const getBookByIsbn = useAppStore((s) => s.getBookByIsbn)
+    const setLists = useAppStore((s) => s.setLists)
+    const [book, setBook] = useState<Book | null>(stateBook ?? null)
 
+    //Ekstra fetch işlemi kaldırıldı artık seçilen book store'dan çekiliyor.
     useEffect(() => {
-        fetch('http://localhost:3001/results')
-            .then((res) => res.json())
-            .then((data: BookList) => {
-                const allBooks = data.lists.flatMap(
-                    (category) => category.books
-                )
-                const found = allBooks.find(
-                    (b) => b.primary_isbn13 === productId
-                )
-                setBook(found ?? null)
-            })
-    }, [productId])
+        if (book || !productId) return
+
+        const cached = getBookByIsbn(productId)
+        if (cached) {
+            setBook(cached)
+            return
+        }
+    }, [book, productId, getBookByIsbn, setLists])
 
     if (!book) {
         return (

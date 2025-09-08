@@ -6,10 +6,11 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { IconAlertTriangle } from '@tabler/icons-react'
 import axiosInstance from '../../axiosInstance'
-import axios, { AxiosError } from 'axios'
+import axios from 'axios'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useAuth } from '../../hooks/useAuth'
 
 //REACT-HOOK-FORM (https://react-hook-form.com/get-started)
 //Controller UI Library componentleri ile kolay çalışmayı sağlıyor.
@@ -18,6 +19,7 @@ type LoginFormInputs = {
     password: string
 }
 
+//YUP VALIDATION
 export const Login: React.FC = () => {
     const loginSchema = yup.object({
         username: yup.string().required('Username is required.'),
@@ -31,6 +33,10 @@ export const Login: React.FC = () => {
     const [error, setError] = useState('')
     const navigate = useNavigate()
 
+    //CUSTOM HOOK kullanımı
+    const { saveAuth } = useAuth()
+
+    //REACT-HOOK-FORM
     const {
         register,
         control,
@@ -48,11 +54,9 @@ export const Login: React.FC = () => {
                 username: username.trim(),
                 password: password.trim(),
             })
-            const { accessToken, refreshToken, user } = res.data
 
-            localStorage.setItem('accessToken', accessToken)
-            localStorage.setItem('refreshToken', refreshToken)
-            localStorage.setItem('user', JSON.stringify(user))
+            const { accessToken, refreshToken, user } = res.data
+            saveAuth({ accessToken, refreshToken, user })
 
             navigate('/books')
         } catch (e) {
@@ -100,7 +104,7 @@ export const Login: React.FC = () => {
                                 value={field.value ?? ''}
                                 description={inputTexts.username.description}
                                 label={inputTexts.username.label}
-                                {...register("username")}
+                                {...register('username')}
                             />
                         )}
                     />
@@ -119,7 +123,7 @@ export const Login: React.FC = () => {
                                 value={field.value ?? ''}
                                 description={inputTexts.password.description}
                                 label={inputTexts.password.label}
-                                {...register("password")}
+                                {...register('password')}
                             />
                         )}
                     />

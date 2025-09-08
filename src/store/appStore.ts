@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { Book } from '../types/types'
+import type { Book, BookCategoryList } from '../types/types'
 
 type WishlistState = {
     currentUserEmail: string | null
@@ -11,7 +11,17 @@ type WishlistState = {
     setUser: (email: string | null) => void
 }
 
-export const useWishlistStore = create<WishlistState>()(
+type BooksState = {
+    lists: BookCategoryList[]
+    lastFetchedAt: number | null
+    setLists: (lists: BookCategoryList[]) => void
+    getBookByIsbn: (isbn: string) => Book | null
+    clearBooks: () => void
+}
+
+type AppState = WishlistState & BooksState
+
+export const useAppStore = create<AppState>()(
     persist(
         (set, get) => ({
             currentUserEmail: null,
@@ -50,9 +60,19 @@ export const useWishlistStore = create<WishlistState>()(
             setUser: (email: string | null) => {
                 set({ currentUserEmail: email })
             },
+            lists: [],
+            lastFetchedAt: null,
+
+            setLists: (lists) => set({ lists }),
+
+            getBookByIsbn: (isbn) => {
+                const all = get().lists.flatMap((l) => l.books)
+                return all.find((b) => b.primary_isbn13 === isbn) ?? null
+            },
+            clearBooks: () => set({ lists: [], lastFetchedAt: null }),
         }),
         {
-            name: 'wishlist-storage',
+            name: 'app-storage',
         }
     )
 )
