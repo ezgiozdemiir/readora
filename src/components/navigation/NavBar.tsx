@@ -29,8 +29,10 @@ const NavBar: React.FC = () => {
     return (
         <Container className="navbar">
             <Group>
-                <Link to="/"><img src={logo} alt="readora" /></Link>
-                 <Button
+                <Link to="/">
+                    <img src={logo} alt="readora" />
+                </Link>
+                <Button
                     component={Link}
                     to="/books"
                     variant="light"
@@ -67,7 +69,7 @@ const NavBar: React.FC = () => {
                             Logout
                         </Button>
                         <Text fw={600} size="sm">
-                           Welcome {user.username}!
+                            Welcome {user.username}!
                         </Text>
                     </>
                 )}

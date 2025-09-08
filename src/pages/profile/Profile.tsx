@@ -1,42 +1,48 @@
-import { Text } from '@mantine/core';
-import { BookCard } from '../../components/book-card/BookCard';
-import { useWishlistStore } from '../../store/wishlistStore';
-import { useEffect, useState } from 'react';
-import type { Book } from '../../types/types';
-import "./Profile.scss"
+import { Text } from '@mantine/core'
+import { BookCard } from '../../components/book-card/BookCard'
+import { useAppStore } from '../../store/appStore'
+import { useEffect, useState } from 'react'
+import type { Book } from '../../types/types'
+import './Profile.scss'
 
 export const Profile: React.FC = () => {
-  const setUser = useWishlistStore(state => state.setUser);
-  const store = useWishlistStore();
-  const wishlist = store.getWishlist();
+    const setUser = useAppStore((state) => state.setUser)
+    const store = useAppStore()
+    const wishlist = store.getWishlist()
 
-  const [isReady, setIsReady] = useState(false);
+    const [isReady, setIsReady] = useState(false)
 
-  useEffect(() => {
-    const user = localStorage.getItem('user');
-    if (user) {
-      const parsed = JSON.parse(user);
-      setUser(parsed.email);
+    useEffect(() => {
+        const user = localStorage.getItem('user')
+        if (user) {
+            const parsed = JSON.parse(user)
+            setUser(parsed.email)
+        }
+        setIsReady(true)
+    }, [setUser])
+
+    if (!isReady) return null
+
+    const isAuthenticated = !!localStorage.getItem('user')
+
+    if (!isAuthenticated) {
+        return (
+            <Text className="unauthenicated">
+                Please log in to view your wishlist.
+            </Text>
+        )
     }
-    setIsReady(true);
-  }, [setUser]);
 
-  if (!isReady) return null;
-
-  const isAuthenticated = !!localStorage.getItem('user');
-
-  if (!isAuthenticated) {
-    return <Text className='unauthenicated'>Please log in to view your wishlist.</Text>;
-  }
-
-  return (
-    <div className='profile'>
-      <h2>My Wishlist</h2>
-      {wishlist.length === 0 ? (
-        <p>Your wishlist is empty.</p>
-      ) : (
-        wishlist.map((book: Book) => <BookCard key={book.primary_isbn13} book={book} />)
-      )}
-    </div>
-  );
-};
+    return (
+        <div className="profile">
+            <h2>My Wishlist</h2>
+            {wishlist.length === 0 ? (
+                <p>Your wishlist is empty.</p>
+            ) : (
+                wishlist.map((book: Book) => (
+                    <BookCard key={book.primary_isbn13} book={book} />
+                ))
+            )}
+        </div>
+    )
+}

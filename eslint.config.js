@@ -35,11 +35,8 @@ export default defineConfig([
                 version: 'detect',
             },
         },
-        ignorePatterns: [
-            'cypress.config.ts',
-        'cypress/**/*.ts',
-        ],
-  files: ['crossbrowser.test.js'],
-  ignores: true,
-    }
+        ignorePatterns: ['cypress.config.ts', 'cypress/**/*.ts'],
+        files: ['crossbrowser.test.js'],
+        ignores: true,
+    },
 ])

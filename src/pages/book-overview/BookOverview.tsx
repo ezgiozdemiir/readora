@@ -1,11 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { BookCard } from '../../components/book-card/BookCard'
 import './BookOverview.scss'
-import {
-    BookCategoryList,
-    DisplayName,
-    type Book,
-} from '../../types/types'
+import { BookCategoryList, DisplayName, type Book } from '../../types/types'
 import { useNavigation } from 'react-router-dom'
 import { bookOverviewLoader } from '../../service/bookOverviewService'
 
@@ -13,15 +9,14 @@ const BookOverview: React.FC = () => {
     const [books, setBooks] = useState<BookCategoryList[]>([])
 
     useEffect(() => {
-         (async () => {
+        ;(async () => {
             try {
                 const data = await bookOverviewLoader()
                 setBooks(data.lists)
             } catch (error) {
-                console.error("An error occured!")
+                console.error('An error occured!')
             }
-        })();
-      
+        })()
     }, [])
 
     const allLabel = 'All'
