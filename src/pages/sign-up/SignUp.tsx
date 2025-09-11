@@ -6,9 +6,9 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export const SignUp: React.FC = () => {
-    const fields: (keyof typeof inputTexts)[] = ['email', 'password']
+    const fields: (keyof typeof inputTexts)[] = ['username', 'password']
     const [formValues, setFormValues] = useState({
-        email: '',
+        username: '',
         password: '',
     })
     const [error, setError] = useState('')
@@ -25,18 +25,20 @@ export const SignUp: React.FC = () => {
     }
 
     const handleSignUp = async () => {
-        const email = formValues.email.trim().toLowerCase()
+        const username = formValues.username.trim().toLowerCase()
         const password = formValues.password.trim()
 
-        const res = await fetch(`http://localhost:3001/users?email=${email}`)
+        const res = await fetch(
+            `http://localhost:3001/users?username=${username}`
+        )
         const users = await res.json()
 
         if (users.length > 0) {
-            setError('User with this email already exists')
+            setError('User with this username already exists')
             return
         }
 
-        const newUser = { email, password }
+        const newUser = { username, password }
 
         const createRes = await fetch(`http://localhost:3001/users`, {
             method: 'POST',
@@ -58,7 +60,7 @@ export const SignUp: React.FC = () => {
     return (
         <div className="inputs">
             <h2>Create an Account</h2>
-            {error === 'User with this email already exists' && (
+            {error === 'User with this username already exists' && (
                 <Alert
                     variant="light"
                     color="red"

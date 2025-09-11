@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 
-type AuthUser = {
+export type AuthUser = {
     email: string
     id: number
     username: string

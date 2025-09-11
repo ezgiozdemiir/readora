@@ -11,6 +11,7 @@ import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useAuth } from '../../hooks/useAuth'
+import { useUser } from '../../contexts/UserContext'
 
 //REACT-HOOK-FORM (https://react-hook-form.com/get-started)
 //Controller UI Library componentleri ile kolay çalışmayı sağlıyor.
@@ -32,13 +33,14 @@ export const Login: React.FC = () => {
 
     const [error, setError] = useState('')
     const navigate = useNavigate()
+    //Context çağırıldı
+    const { setUser } = useUser()
 
     //CUSTOM HOOK kullanımı
     const { saveAuth } = useAuth()
 
     //REACT-HOOK-FORM
     const {
-        register,
         control,
         handleSubmit,
         formState: { errors },
@@ -57,7 +59,7 @@ export const Login: React.FC = () => {
 
             const { accessToken, refreshToken, user } = res.data
             saveAuth({ accessToken, refreshToken, user })
-
+            setUser(user)
             navigate('/books')
         } catch (e) {
             if (axios.isAxiosError(e)) {
@@ -74,6 +76,7 @@ export const Login: React.FC = () => {
             <h2>Login</h2>
             {error === 'Username or password' && (
                 <Alert
+                    data-testid="login-error"
                     variant="light"
                     color="red"
                     radius="md"
@@ -104,7 +107,6 @@ export const Login: React.FC = () => {
                                 value={field.value ?? ''}
                                 description={inputTexts.username.description}
                                 label={inputTexts.username.label}
-                                {...register('username')}
                             />
                         )}
                     />
@@ -123,7 +125,6 @@ export const Login: React.FC = () => {
                                 value={field.value ?? ''}
                                 description={inputTexts.password.description}
                                 label={inputTexts.password.label}
-                                {...register('password')}
                             />
                         )}
                     />

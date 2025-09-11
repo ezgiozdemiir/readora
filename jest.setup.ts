@@ -8,5 +8,8 @@ if (typeof global.TextEncoder === 'undefined') {
     // @ts-ignore
     global.TextDecoder = TextDecoder
 }
+afterEach(() => {
+    jest.clearAllMocks()
+})
 
 fetchMock.enableMocks()

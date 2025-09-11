@@ -9,6 +9,7 @@ const NavBar: React.FC = () => {
     const [user, setUser] = useState<User | null>(null)
     const navigate = useNavigate()
     const location = useLocation()
+
     useEffect(() => {
         try {
             const raw = localStorage.getItem('user')
