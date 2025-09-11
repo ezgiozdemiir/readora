@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
 import type { Book } from '../../types/types'
-import { Group, Skeleton } from '@mantine/core'
+import {
+    Group,
+    Skeleton,
+    Textarea,
+    Button as MantineButton,
+} from '@mantine/core'
 import './BookDetail.scss'
 import { useAppStore } from '../../store/appStore'
+import { useUser } from '../../contexts/UserContext'
 
 const BookDetail: React.FC = () => {
     //routeda kullanılan değişken ismini param olarak girmek zorunlu
@@ -13,6 +19,27 @@ const BookDetail: React.FC = () => {
     const getBookByIsbn = useAppStore((s) => s.getBookByIsbn)
     const setLists = useAppStore((s) => s.setLists)
     const [book, setBook] = useState<Book | null>(stateBook ?? null)
+
+    //useContext'ten gelen user objesi
+    const { user } = useUser()
+    const [commentText, setCommentText] = useState('')
+    const [comments, setComments] = useState<
+        { username: string; text: string }[]
+    >([])
+
+    const handleAddComment = () => {
+        if (!user) {
+            alert('Please login to write a comment')
+            return
+        }
+        if (!commentText.trim()) return
+
+        setComments((prev) => [
+            ...prev,
+            { username: user.username, text: commentText },
+        ])
+        setCommentText('')
+    }
 
     //Ekstra fetch işlemi kaldırıldı artık seçilen book store'dan çekiliyor.
     useEffect(() => {
@@ -89,6 +116,49 @@ const BookDetail: React.FC = () => {
                         </ul>
                     </div>
                 </div>
+            </div>
+            <div className="mt-10">
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                    Comments
+                </h3>
+                <div className="mb-2 text-sm text-gray-600">
+                    <div>
+                        Commented by:{' '}
+                        <span className="font-medium">{user?.username}</span>
+                    </div>
+                </div>
+                <Textarea
+                    placeholder="Comment about this book :)"
+                    autosize
+                    // minRows={3}
+                    // maxRows={6}
+                    value={commentText}
+                    onChange={(event) =>
+                        setCommentText(event.currentTarget.value)
+                    }
+                />
+                <MantineButton
+                    className="mt-3"
+                    onClick={handleAddComment}
+                    disabled={!user}
+                >
+                    Send Comment
+                </MantineButton>
+                <ul className="mt-4 space-y-2">
+                    {comments.length === 0 && (
+                        <li className="text-sm text-gray-500">
+                            There is not comment yet.
+                        </li>
+                    )}
+                    {comments.map((c, i) => (
+                        <li key={i} className="border rounded p-2">
+                            <div className="text-sm text-gray-600 mb-1">
+                                {c.username} wrote:
+                            </div>
+                            <p className="text-gray-800">{c.text}</p>
+                        </li>
+                    ))}
+                </ul>
             </div>
         </div>
     )

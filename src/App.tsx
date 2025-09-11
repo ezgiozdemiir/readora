@@ -4,6 +4,7 @@ import '@mantine/core/styles.css'
 
 import AppRouter from './AppRouter'
 import { useAppStore } from './store/appStore'
+import { UserProvider } from './contexts/UserContext'
 
 const App: React.FC = () => {
     const setUser = useAppStore((state) => state.setUser)
@@ -18,7 +19,9 @@ const App: React.FC = () => {
 
     return (
         <MantineProvider defaultColorScheme="light">
-            <AppRouter />
+            <UserProvider>
+                <AppRouter />
+            </UserProvider>
         </MantineProvider>
     )
 }

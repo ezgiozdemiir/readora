@@ -6,7 +6,7 @@ export const inputTexts = {
         error: 'Password is mandatory!',
     },
     username: {
-        label: 'E-mail',
+        label: 'Username',
         placeholder: 'username',
         description: 'Everyone can see your username',
         error: 'Valid username is required!',
