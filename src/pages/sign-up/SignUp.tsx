@@ -1,119 +1,143 @@
 import Input from '../../components/input/Input'
 import { inputTexts } from '../../constants/texts'
-import { Button, Alert } from '@mantine/core'
-import { IconAlertTriangle } from '@tabler/icons-react'
+import { Button } from '@mantine/core'
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import * as yup from 'yup'
+import { useUser } from '../../hooks/useUser'
+import { useAuth } from '../../hooks/useAuth'
+import axios from 'axios'
+import axiosInstance from '../../axiosInstance'
+import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { Toast } from '../../components/toast/Toast'
+import clsx from 'clsx'
+import { useLoginSubmit } from '../../hooks/useLoginSubmit'
+
+type SignUpFormInputs = {
+    username: string
+    password: string
+}
 
 export const SignUp: React.FC = () => {
-    const fields: (keyof typeof inputTexts)[] = ['username', 'password']
-    const [formValues, setFormValues] = useState({
-        username: '',
-        password: '',
+    const signUpSchema = yup.object({
+        username: yup.string().required('Username is required.'),
+        password: yup
+            .string()
+            .min(6, 'Must be at least 6 character.')
+            .max(10, 'Must be at most 10 characters.')
+            .required('Password is required.'),
     })
-    const [error, setError] = useState('')
-    const navigate = useNavigate()
 
-    const handleChange = (
-        event: React.ChangeEvent<HTMLInputElement>,
-        fieldName: keyof typeof inputTexts
-    ) => {
-        setFormValues((prev) => ({
-            ...prev,
-            [fieldName]: event.target.value,
-        }))
-    }
+    const [errorRegister, setErrorRegister] = useState('')
+    const { login, error, setError } = useLoginSubmit()
+    const { setUser } = useUser()
+    const { saveAuth } = useAuth()
 
-    const handleSignUp = async () => {
-        const username = formValues.username.trim().toLowerCase()
-        const password = formValues.password.trim()
+    const {
+        control,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<SignUpFormInputs>({ resolver: yupResolver(signUpSchema) })
 
-        const res = await fetch(
-            `http://localhost:3001/users?username=${username}`
-        )
-        const users = await res.json()
+    const onSubmit: SubmitHandler<SignUpFormInputs> = async ({
+        username,
+        password,
+    }) => {
+        setErrorRegister('')
+        try {
+            const res = await axiosInstance.post('/register', {
+                username: username.trim().toLowerCase(),
+                password: password.trim(),
+            })
 
-        if (users.length > 0) {
-            setError('User with this username already exists')
+            const { accessToken, refreshToken, user } = res.data
+            saveAuth({ accessToken, refreshToken, user })
+            setUser(user)
+        } catch (e) {
+            if (axios.isAxiosError(e)) {
+                const msg =
+                    (e.response?.data as any)?.error || 'Failed to create user'
+                setErrorRegister(msg)
+            } else {
+                setErrorRegister('Unknown error occurred!')
+            }
             return
         }
 
-        const newUser = { username, password }
-
-        const createRes = await fetch(`http://localhost:3001/users`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(newUser),
-        })
-
-        if (createRes.ok) {
-            const createdUser = await createRes.json()
-            localStorage.setItem('user', JSON.stringify(createdUser))
-            setError('')
-            navigate('/')
-        } else {
-            setError('Failed to create user')
-        }
+        await login({ username, password, redirectTo: '/books' })
     }
+
     return (
         <div className="inputs">
             <h2>Create an Account</h2>
-            {error === 'User with this username already exists' && (
-                <Alert
-                    variant="light"
-                    color="red"
-                    radius="md"
-                    title="This account has already exist!"
-                    icon={<IconAlertTriangle />}
-                    withCloseButton
-                    onClose={() => setError('')}
-                    mt="md"
-                >
-                    Please go to{' '}
-                    <a href="/login" style={{ textDecoration: 'underline' }}>
-                        login page
-                    </a>
-                    to enter your account.
-                </Alert>
-            )}
-            {error === 'Failed to create user' && (
-                <Alert
-                    variant="light"
-                    color="red"
-                    radius="md"
-                    title="Something went wrong in the system!"
-                    icon={<IconAlertTriangle />}
-                    withCloseButton
-                    onClose={() => setError('')}
-                    mt="md"
-                >
-                    Please try again later.
-                </Alert>
-            )}
-            {fields.map((field) => (
-                <div className="input" key={field}>
-                    <Input
-                        placeholder={inputTexts[field].placeholder}
-                        description={inputTexts[field].description}
-                        label={inputTexts[field].label}
-                        value={formValues[field]}
-                        onChange={(e) => handleChange(e, field)}
+            <div className={clsx('toast', errorRegister && 'show')}>
+                {errorRegister && (
+                    <Toast
+                        title={errorRegister}
+                        onClose={() => setError('')}
+                        data-testid="signup-error"
+                    >
+                        <>
+                            Please try again later or{' '}
+                            <a
+                                href="/login"
+                                style={{ textDecoration: 'underline' }}
+                            >
+                                go to login page
+                            </a>
+                            .
+                        </>
+                    </Toast>
+                )}
+            </div>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="input">
+                    <Controller
+                        name="username"
+                        control={control}
+                        render={({ field, fieldState }) => (
+                            <Input
+                                {...field}
+                                type="text"
+                                placeholder={inputTexts.username.placeholder}
+                                value={field.value ?? ''}
+                                description={inputTexts.username.description}
+                                label={inputTexts.username.label}
+                                error={fieldState.error?.message || undefined}
+                            />
+                        )}
                     />
                 </div>
-            ))}
-            <div className="error">{error && <div>{error}</div>}</div>
-            <div className="submit">
-                <Button
-                    variant="filled"
-                    size="md"
-                    radius="md"
-                    onClick={handleSignUp}
-                >
-                    Login
-                </Button>
-            </div>
+
+                <div className="input">
+                    <Controller
+                        name="password"
+                        control={control}
+                        render={({ field, fieldState }) => (
+                            <Input
+                                {...field}
+                                type="password"
+                                placeholder={inputTexts.password.placeholder}
+                                value={field.value ?? ''}
+                                description={inputTexts.password.description}
+                                label={inputTexts.password.label}
+                                error={fieldState.error?.message || undefined}
+                            />
+                        )}
+                    />
+                </div>
+
+                <div className="submit">
+                    <Button
+                        type="submit"
+                        variant="filled"
+                        size="md"
+                        radius="md"
+                    >
+                        Create account
+                    </Button>
+                </div>
+            </form>
         </div>
     )
 }

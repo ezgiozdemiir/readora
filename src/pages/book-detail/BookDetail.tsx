@@ -9,7 +9,7 @@ import {
 } from '@mantine/core'
 import './BookDetail.scss'
 import { useAppStore } from '../../store/appStore'
-import { useUser } from '../../contexts/UserContext'
+import { useUser } from '../../hooks/useUser'
 
 const BookDetail: React.FC = () => {
     //routeda kullanılan değişken ismini param olarak girmek zorunlu
