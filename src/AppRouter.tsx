@@ -25,6 +25,7 @@ const router = createBrowserRouter([
         element: <RootLayout />,
         children: [
             { path: 'login', element: <Login /> },
+            { path: 'sign-up', element: <SignUp /> },
             {
                 path: '',
                 element: <ProtectedRoute />,
@@ -32,7 +33,6 @@ const router = createBrowserRouter([
                     { path: 'profile', element: <Profile /> },
                     { path: 'books', element: <BookOverview /> },
                     { path: 'books/:productId', element: <BookDetail /> },
-                    { path: 'sign-up', element: <SignUp /> },
                     {
                         path: '*',
                         element: <NotFound />,
